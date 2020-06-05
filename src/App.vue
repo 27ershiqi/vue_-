@@ -1,19 +1,19 @@
 <template>
 <div>
-  <Header/>
-    <router-view></router-view>
-  <Footer/>
+    <Header/>
+        <router-view></router-view>
+    <Footer v-if="!$route.meta.isHideFooter"/>
 </div>
 </template>
 
 <script type="text/ecmascript-6">
-import Footer from "./components/Footer"
 import Header from "./components/Header"
+import Footer from "./components/Footer"
 export default {
   components:{
-    Footer,
-    Header
-  }
+    Header,
+    Footer
+  },
 }
 </script>
 

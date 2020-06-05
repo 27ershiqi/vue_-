@@ -1,5 +1,9 @@
 <template>
-  <div>Search</div>
+  <div>
+    <h2>search</h2>
+    <h3>keywrou:{{$route.params.keywrou}}</h3>
+    <h3>keywrou02:{{$route.query.keywrou2}}</h3>
+  </div>
 </template>
 
 <script>

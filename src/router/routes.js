@@ -1,23 +1,30 @@
 import Home from "../pages/Home"
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Search from "../pages/Search";
+import Login from "../pages/Login"
+import Register from "../pages/Register"
+import Search from "../pages/Search"
 
 export default [
   {
-    path: "/",
-    component: Home,
+    path:'/',
+    component: Home
   },
   {
-    path: "/login",
+    path: "/login",//登录
     component: Login,
+    meta:{
+      isHideFooter:true
+    }
   },
   {
-    path: "/register",
+    path: "/register",//注册
     component: Register,
+    meta:{
+      isHideFooter:true
+    }
   },
   {
-    path: "/search",
+    path: "/search/:keywrou?",
     component: Search,
+    name:"key"
   },
 ]
