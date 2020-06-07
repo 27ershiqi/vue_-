@@ -65,9 +65,7 @@
         }
 
         // this.$router.push(location,()=>{})
-        this.$router.push(location).catch(()=>{
-          
-        })
+        this.$router.push(location)
       }
     },
   }
