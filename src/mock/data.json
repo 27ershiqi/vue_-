@@ -1,0 +1,20 @@
+[
+  {
+    "id":1,
+    "name":"小燕子",
+    "age":18,
+    "likes":["foot","basket"]
+  },
+  {
+    "id":2,
+    "name":"小青",
+    "age":20,
+    "likes":["foot","basket"]
+  },
+  {
+    "id":3,
+    "name":"小白",
+    "age":19,
+    "likes":["foot","basket"]
+  }
+]

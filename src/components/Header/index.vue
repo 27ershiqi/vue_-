@@ -59,11 +59,12 @@
         const location = {
           name:"key"
         }
-        if(location){
+        if (keywrou) {
             location.params = {keywrou}
-            location.query = {keywrou2:keywrou}
         }
-
+       // 如果当前路由已经有categoryName/cateory1Id/cateory2Id/cateory3Id, 携带上
+        // 有什么带什么: 如果有就自然带上了, 如果没有就没携带上
+        location.query = this.$route.query
         // this.$router.push(location,()=>{})
         this.$router.push(location)
       }
