@@ -28,3 +28,7 @@ export function  reqCategorys() {
 //定义访问mock接口的接口请求函数
 export const reqBanners = () => mockAjax('/banners')
 export const reqFloors = () => mockAjax('/floors')
+
+//获取商品列表 /api/list  是post请求
+//searchParams包含所有需要传递请求参数的对象
+export const reqProductList = (options) => ajax.post('/list', options)
