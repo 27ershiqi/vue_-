@@ -23,19 +23,19 @@ export default [
     }
   },
   {
-    path: "/search/:keywrou?",
+    path: "/search/:keyword?",
     component: Search,
     name:"key",
     //  props(route){
     //    return{
-    //     keywrou3:route.params.keywrou,
+    //     keywrou3:route.params.keyword,
     //     keywrou4:route.query.keywrou2
     //    }
     //  },
-    //  props:route => ({keywrou3:route.params.keywrou, keywrou4:route.query.keywrou2})
+    //  props:route => ({keywrou3:route.params.keyword, keywrou4:route.query.keywrou2})
     props:function (route) {
         return {
-          keywrou3:route.params.keywrou,
+          keywrou3:route.params.keyword,
           keywrou4:route.query.keywrou2
         }
     }

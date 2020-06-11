@@ -16,8 +16,8 @@ const actions = {
   async getProductList ({commit}, options) {
     const result = await reqProductList(options)
     if (result.code===200) {
-      console.log('0000000000000',result)
       const productList = result.data
+      console.log('0000000000000',productList)
       commit('RECEIVE_PRODUCT_LIST', productList)
     }
   }

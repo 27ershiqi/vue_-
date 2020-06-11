@@ -35,7 +35,7 @@
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keywrou"/>
+          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword"/>
           <button class="sui-btn btn-xlarge btn-danger" type="button" @click="search">搜索</button>
         </form>
       </div>
@@ -48,25 +48,43 @@
     name: 'Header',
     data () {
       return {
-        keywrou:''
+        keyword:''
       }
+    },
+    mounted() {
+      //在Header中:通过事件总线对象绑定自定义事件监听,在回调中删除输入数据
+      this.$bus.$on('removekeyword',()=>{
+        this.keyword = ''
+      })
     },
     methods: {
       search(){
-        let keywrou = this.keywrou
-        // this.$router.push(`/search/${keywrou}?keywrou2=${keywrou.toUpperCase()}`)
-        // this.$router.push({name:'key',params:{keywrou:keywrou},query:{keywrou2:keywrou}})
+        let keyword = this.keyword
+        // this.$router.push(`/search/${keyword}?keywrou2=${keyword.toUpperCase()}`)
+        // this.$router.push({name:'key',params:{keyword:keyword},query:{keywrou2:keyword}})
         const location = {
           name:"key"
         }
-        if (keywrou) {
-            location.params = {keywrou}
+        if (keyword) {
+            location.params = {keyword}
         }
        // 如果当前路由已经有categoryName/cateory1Id/cateory2Id/cateory3Id, 携带上
         // 有什么带什么: 如果有就自然带上了, 如果没有就没携带上
         location.query = this.$route.query
         // this.$router.push(location,()=>{})
-        this.$router.push(location)
+        //如果当前没有在search,用push,反之用replace
+        //一
+        // if(this.$route.name !== 'key'){
+        //   this.$router.push(location)
+        // }else{
+        //   this.$router.replace(location)
+        // }
+        //二
+         if(this.$route.path.indexOf('/search') !== 0){
+          this.$router.push(location)
+        }else{
+          this.$router.replace(location)
+        }
       }
     },
   }

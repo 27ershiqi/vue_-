@@ -167,9 +167,9 @@
         }
 
       //去除当前params中的keywrou，如果有值那就携带上
-      const keywrou = this.$route.params.keywrou
-        if (keywrou) {
-          location.params = {keywrou}
+      const keyword = this.$route.params.keyword
+        if (keyword) {
+          location.params = {keyword}
         }
         //准备跳转路由的location
         const location = {
@@ -177,8 +177,13 @@
           query
         }
         //跳转到search
-        this.$router.push(location)
-        this.hideSubCategorys()
+        // this.$router.push(location)
+        if(this.$route.path.indexOf('/search') !== 0){
+          this.$router.push(location)
+        }else{
+          this.$router.replace(location)
+        }
+        this.hideSubCategorys() 
       }
     },
   }
