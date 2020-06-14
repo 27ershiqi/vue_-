@@ -40,8 +40,8 @@ import {mapState,mapGetters} from "vuex"
         trademarkList2 :state=> state.search.productList.trademarkList,
         attrsList2 :state=> state.search.productList.attrsList
       }),
-
       ...mapGetters(['trademarkList','attrsList'])
+    
     },
   }
 </script>

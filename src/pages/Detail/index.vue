@@ -98,12 +98,12 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum">
+                <a href="javascript:" class="plus" @click="isNaN(skuNum)?skuNum=1:skuNum=skuNum*1+1">+</a>
+                <a href="javascript:" class="mins" @click="isNaN(skuNum)?skuNum=1:skuNum=skuNum>1?skuNum-1:skuNum">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addToCar">加入购物车</a>
               </div>
             </div>
           </div>
@@ -363,7 +363,10 @@
 
     data () {
       return {
-        currentIndex: 0
+        //当前要显示图片的下标
+        currentIndex: 0,
+        //商品的数量
+        skuNum:1,
       }
     },
 
@@ -399,9 +402,47 @@
 
         // 将指定的value选中
         value.isChecked = '1'
+      },
+      addToCar(){
+       // 收集数据
+        let skuNum = this.skuNum
+        let skuId = this.$route.params.id
+        //方式一:使用回调函数
+        // this.$store.dispatch('addToCart',{skuNum, skuId, callback: this.callback})
+        // //成功了跳转到成功的路由
+        //    this.$router.push('/addcartsuccess')
+        // //失败了就提示
+
+        //方式二:利用dispatch()的返回值是promise
+        const promise = this.$store.dispatch('addToCart2',{skuNum, skuId})
+        console.log('-------',promise)
+        promise.then((value)=>{
+            //将当前的商品的skuInfo的json文本保存到sessionStorage中
+            window.sessionStorage.setItem('SKU_INFO_KEY',JSON.stringify(this.skuInfo))
+            //跳转路由,携带skuNum的query参数
+            this.$router.push({path: '/addcartsuccess', query: {skuNum}})
+        }).catch((error)=>{
+            alert(error.message)
+        })
+
+        // try{
+        //  await this.$store.dispatch('addToCart2',{skuNum, skuId})
+        //   this.$route.push('/addcartsuccess')
+        // }catch(error){
+        //   alert(error.message)
+        // }
+      },
+
+      //在异步actions执行成功或失败后,才回调执行的方法
+      //errorMsg需要显示的错误信息。如果成功了没有值
+      callback (errorMsg) {
+        if (errorMsg) { // 如果失败了, 提示
+          alert(errorMsg)
+        } else { // 如果成功了, 跳转到成功的路由
+          this.$router.push('/addcartsuccess')
+        }
       }
-    },
-    
+  },
     components: {
       ImageList,
       Zoom

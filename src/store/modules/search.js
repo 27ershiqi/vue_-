@@ -23,6 +23,7 @@ const actions = {
       }
     })
     const result = await reqProductList(options)
+    console.log('result :>> ', result);
     if (result.code===200) {
       const productList = result.data
       commit('RECEIVE_PRODUCT_LIST', productList)
