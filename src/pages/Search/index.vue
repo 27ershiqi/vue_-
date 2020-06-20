@@ -69,7 +69,8 @@
                 <div class="list-wrap">
                   <div class="p-img">
                     <router-link :to="`/detail/${item.id}`">
-                      <img :src="item.defaultImg" />
+                      <!-- <img :src="item.defaultImg" /> -->
+                       <img v-lazy="item.defaultImg" >
                     </router-link>
                   </div>
                   <div class="price">
@@ -85,7 +86,7 @@
                     <i class="command">已有<span>2000</span>人评价</i>
                   </div>
                   <div class="operate">
-                    <a href="success-cart.html" target="_blank" class="sui-btn btn-bordered btn-danger">加入购物车</a>
+                    <a href="javascript:;" class="sui-btn btn-bordered btn-danger" @click="addToCart(item)">加入购物车</a>
                     <a href="javascript:void(0);" class="sui-btn btn-bordered">收藏</a>
                   </div>
                 </div>
@@ -129,6 +130,28 @@
       }
     },  
      methods: {
+
+     async addToCart(item){
+       try{
+          await this.$store.dispatch('addToCart2',{skuId:item.id, skuNum: 1})
+          // 成功后,根据当前商品的信息数据整理一个skuInfo对象
+           const skuInfo = {
+            skuDefaultImg: item.defaultImg,
+            skuName: item.title,
+            id: item.id,
+          }
+          // 保存商品信息对象到sessionStorage
+          window.sessionStorage.setItem('SKU_INFO_KEY', JSON.stringify(skuInfo))
+          // 跳转到添加购物车成功的界面
+          this.$router.push({
+            path: '/addcartsuccess',
+            query: {skuNum: 1}
+          })
+        } catch (error) {
+          alert(error.message)
+        }
+      },
+
        //获取指定页码的商品列表
       getProductList (pageNo=1) {
         //更新页码数据

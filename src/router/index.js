@@ -1,6 +1,7 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import routes from "./routes"
+import store from '@/store'
 Vue.use(VueRouter)
 const originpush = VueRouter.prototype.push
 const originReplace = VueRouter.prototype.replace
@@ -23,7 +24,7 @@ VueRouter.prototype.replace = function(location,onComplete,onAbore) {
         originReplace.call(this,location,onComplete,onAbore)
     }
 }
-export default new VueRouter({
+const router = new VueRouter({
     mode:'history',
     routes,
     // 路由跳转后, 滚动条停留在最上面(0,0)
@@ -32,3 +33,22 @@ export default new VueRouter({
         return { x: 0, y: 0 }
       }
 })
+const checkPaths = ['/trade','/pay','/center']
+//注册全局前置守卫
+router.beforeEach((to, from, next) => {//监视回调函数
+    
+  const targetPath = to.path
+  const needCheck = checkPaths.find(path => targetPath.indexOf(path)===0)
+  if(needCheck){
+   const token = store.state.user.userInfo.token
+   if(token){
+    next()//放行 
+   }else{
+    next('/login?redirect=' + targetPath)
+   }
+  } else {
+    next()//放行
+}
+})
+//向外暴露路由器对象
+export default router

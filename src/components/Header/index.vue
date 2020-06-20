@@ -5,14 +5,18 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="userInfo.token">
+            <span>{{userInfo.name}}</span>&nbsp;&nbsp;
+            <a href="javascript:;" @click="logout">退出</a>
+          </p>
+          <p v-else>
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
           </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
+          <router-link to="/center/myorder">我的订单</router-link>
           <router-link to='/shopcart'>我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
@@ -46,6 +50,11 @@
 <script>
   export default {
     name: 'Header',
+    computed: {
+      userInfo(){
+        return this.$store.state.user.userInfo
+      }
+    },
     data () {
       return {
         keyword:''
@@ -58,6 +67,17 @@
       })
     },
     methods: {
+
+     async logout(){
+          try{
+              await this.$store.dispatch('logout')
+              this.$router.replace('/login')
+          } catch (error) {
+              alert(error.message)
+          }
+      },
+
+
       search(){
         let keyword = this.keyword
         // this.$router.push(`/search/${keyword}?keywrou2=${keyword.toUpperCase()}`)

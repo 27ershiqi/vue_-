@@ -11,85 +11,26 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list">
+        <ul class="cart-list" v-for="(item, index) in cartList" :key="item.id">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list">
+            <!-- ischeked 0:不勾选 1:勾选 -->
+            <input type="checkbox" name="chk_list" :checked="item.isChecked === 1"
+            @change="checkCartItem(item)">
           </li>
           <li class="cart-list-con2">
-            <img src="./images/goods1.png">
-            <div class="item-msg">米家（MIJIA） 小米小白智能摄像机增强版 1080p高清360度全景拍摄AI增强</div>
-          </li>
-          <li class="cart-list-con3">
-            <div class="item-txt">语音升级款</div>
+            <img :src="item.imgUrl">
+            <div class="item-msg">{{item.skuName}}</div>
           </li>
           <li class="cart-list-con4">
-            <span class="price">399.00</span>
+            <span class="price">{{item.cartPrice}}</span>
           </li>
           <li class="cart-list-con5">
             <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" value="1" minnum="1" class="itxt">
+            <input autocomplete="off" type="text" value="1" minnum="1" class="itxt" :value="item.skuNum">
             <a href="javascript:void(0)" class="plus">+</a>
           </li>
           <li class="cart-list-con6">
-            <span class="sum">399</span>
-          </li>
-          <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
-            <br>
-            <a href="#none">移到收藏</a>
-          </li>
-        </ul>
-
-        <ul class="cart-list">
-          <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" id="" value="">
-          </li>
-          <li class="cart-list-con2">
-            <img src="./images/goods2.png">
-            <div class="item-msg">华为（MIJIA） 华为metaPRO 30 浴霸4摄像 超清晰</div>
-          </li>
-          <li class="cart-list-con3">
-            <div class="item-txt">黑色版本</div>
-          </li>
-          <li class="cart-list-con4">
-            <span class="price">5622.00</span>
-          </li>
-          <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" value="1" minnum="1" class="itxt">
-            <a href="javascript:void(0)" class="plus">+</a>
-          </li>
-          <li class="cart-list-con6">
-            <span class="sum">5622</span>
-          </li>
-          <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
-            <br>
-            <a href="#none">移到收藏</a>
-          </li>
-        </ul>
-
-        <ul class="cart-list">
-          <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" id="" value="">
-          </li>
-          <li class="cart-list-con2">
-            <img src="./images/goods3.png">
-            <div class="item-msg">iphone 11 max PRO 苹果四摄 超清晰 超费电 超及好用</div>
-          </li>
-          <li class="cart-list-con3">
-            <div class="item-txt">墨绿色</div>
-          </li>
-          <li class="cart-list-con4">
-            <span class="price">11399.00</span>
-          </li>
-          <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" value="1" minnum="1" class="itxt">
-            <a href="javascript:void(0)" class="plus">+</a>
-          </li>
-          <li class="cart-list-con6">
-            <span class="sum">11399</span>
+            <span class="sum">{{item.cartPrice * item.skuNum}}</span>
           </li>
           <li class="cart-list-con7">
             <a href="#none" class="sindelet">删除</a>
@@ -101,7 +42,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox">
+        <input class="chooseAll" type="checkbox" v-model="checkAll">
         <span>全选</span>
       </div>
       <div class="option">
@@ -111,13 +52,13 @@
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>0</span>件商品</div>
+          <span>{{totalCount}}</span>件商品</div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">0</i>
+          <i class="summoney">{{totalprice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+           <router-link to="/trade" class="sum-btn">结算</router-link>
         </div>
       </div>
     </div>
@@ -125,8 +66,47 @@
 </template>
 
 <script>
+  import {mapState,mapGetters} from 'vuex'
   export default {
     name: 'ShopCart',
+
+    computed: {
+      ...mapState({
+        cartList:state => state.shopcart.cartList
+      }),
+      ...mapGetters(['totalCount','totalprice','isCheckAll']), 
+      //包含get和set的计算属性
+      checkAll:{
+        get(){
+          return this.isCheckAll
+        },
+        //当用户点击改变勾选框的勾选状态时调用
+       async set(value){//标识当前是否勾选的布尔值可能是true,也可能是false
+          try{
+            await this.$store.dispatch('checkAllCartItems',value)
+            this.$store.dispatch('getCartList')
+          }catch(error){
+              alert(error.message)
+          }
+        } 
+      }
+    },
+    mounted() {
+      this.$store.dispatch('getCartList')
+    },
+    methods: {
+      //勾选或者不勾选指定的购物项
+     async checkCartItem(item){
+          const skuId = item.skuId 
+          const isChecked = item.isChecked === 1 ? '0' : '1' 
+        try{
+         await this.$store.dispatch('checkCartItem',{skuId,isChecked})
+          this.$store.dispatch('getCartList')
+        }catch(error){
+          alert(error.message)
+        }
+      }
+    }
   }
 </script>
 
@@ -153,7 +133,7 @@
         }
 
         .cart-th1 {
-          width: 25%;
+          width: 5%;
 
           input {
             vertical-align: middle;
@@ -165,14 +145,14 @@
         }
 
         .cart-th2 {
-          width: 25%;
+          width: 35%;
         }
 
         .cart-th3,
         .cart-th4,
         .cart-th5,
         .cart-th6 {
-          width: 12.5%;
+          width: 15%;
 
         }
       }
@@ -191,11 +171,11 @@
           }
 
           .cart-list-con1 {
-            width: 4.1667%;
+            width: 5%;
           }
 
           .cart-list-con2 {
-            width: 25%;
+            width: 35%;
 
             img {
               width: 82px;
@@ -212,7 +192,7 @@
           }
 
           .cart-list-con3 {
-            width: 20.8333%;
+            width: 15%;
 
             .item-txt {
               text-align: center;
@@ -220,12 +200,12 @@
           }
 
           .cart-list-con4 {
-            width: 12.5%;
+            width: 15%;
 
           }
 
           .cart-list-con5 {
-            width: 12.5%;
+            width: 15%;
 
             .mins {
               border: 1px solid #ddd;
@@ -258,7 +238,7 @@
           }
 
           .cart-list-con6 {
-            width: 12.5%;
+            width: 15%;
 
             .sum {
               font-size: 16px;
@@ -266,7 +246,7 @@
           }
 
           .cart-list-con7 {
-            width: 12.5%;
+            width: 15%;
 
             a {
               color: #666;

@@ -1,5 +1,6 @@
 import axios from "axios"
 import Nprogress from "nprogress"
+import store from '../store/'
 const instance = axios.create({
   baseURL:"/api",//基础path
   timeout:15000//请求超时时间
@@ -9,6 +10,15 @@ const instance = axios.create({
 instance.interceptors.request.use(config=>{
   //显示请求进度条
   Nprogress.start()
+ 
+  //每个请求自动携带userTempId的请求头: 在请求拦截器中实现
+  config.headers['userTempId'] = store.state.user.userTempId
+  
+  //登陆后每个请求自动携带token
+  const token = store.state.user.userInfo.token
+  if(token){
+    config.headers['token'] = token
+  }
 
   return config
 })
